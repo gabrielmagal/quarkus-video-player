@@ -13,7 +13,7 @@ import java.util.List;
 @ApplicationScoped
 public class VideoPlayerController {
     public Response streamMedia(String path, String mediaName) {
-        String videoPath = path + mediaName;
+        String videoPath = System.getProperty("user.home") + "/videos/" + path + "/" + mediaName;
         if (!new File(videoPath).exists()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -29,9 +29,14 @@ public class VideoPlayerController {
 
     public Response uploadFile(FormData formData) {
         try {
-            Path filePath = Path.of("C:/videos/" + formData.fileName);
-            Files.copy(formData.file, filePath, StandardCopyOption.REPLACE_EXISTING);
-            return Response.ok("File uploaded successfully: " + filePath).build();
+            String path = System.getProperty("user.home") + "/videos/" + formData.fileName;
+            int lastSeparatorIndex = path.lastIndexOf(File.separator);
+            String directory = path.substring(0, lastSeparatorIndex);
+            String fileName = path.substring(lastSeparatorIndex + 1);
+            Files.createDirectories(Path.of(directory));
+            Path destinationPath = Paths.get(directory, fileName);
+            Files.copy(formData.file, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+            return Response.ok("File uploaded successfully to directory: " + directory + ", with file name: " + fileName).build();
         } catch (IOException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("Error uploading file: " + e.getMessage()).build();
@@ -40,7 +45,7 @@ public class VideoPlayerController {
 
     public List<String> listFiles(String path) {
         List<String> stringList = new ArrayList<>();
-        File folder = new File("C:/videos/" + path);
+        File folder = new File(System.getProperty("user.home") + "/videos/" + path);
         if (folder.exists() && folder.isDirectory()) {
             File[] files = folder.listFiles();
             if (files != null) {

@@ -22,7 +22,7 @@ public class VideoPlayerResource {
         if(Objects.isNull(path) || path.isEmpty() || path.isBlank()) {
             throw new RuntimeException("A pasta é obrigatória!");
         }
-        return videoPlayerController.streamMedia("C:/videos/" + path + "/", mediaName);
+        return videoPlayerController.streamMedia(path, mediaName);
     }
 
     @POST
