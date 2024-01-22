@@ -9,12 +9,12 @@ Como mencionado anteriormente, basta baixar o projeto e rodar o comando no termi
 Também considere criar no seu Disco Local C uma pasta com nome videos, no final ficará: "C:/videos", dentro da pasta videos você cria a estrutura que quiser.
 
 # Como rodar no Docker?
-Primeiramente vá no seu Disco C e crie uma pasta chamada volumes, essa pasta será utilizada para utilizar volume no Docker. <br>
+Primeiramente vá no seu Disco C e crie uma pasta chamada "volumes", essa pasta será utilizada para utilizar volume no Docker. <br>
 Após essa pasta estar criada, acesse a pasta do projeto onde você extraiu os arquivos, e estando na mesma pasta que o pom.xml, abra um Prompt de comando. <br>
 Com o Prompt de comando aberto, execute os seguintes comandos: "mvn clean install -DskipTests", isso será utilizado para criar os artefatos do projeto. <br>
 Depois desse comando, já com o Docker rodando, utilize ainda no terminal: "docker volume create volume_video_player", esse comando criará o volume no Docker. <br>
 Após esses comandos, utilize este: "docker build -f src/main/docker/Dockerfile.jvm -t quarkus/video_player .", desta forma iremos criar uma imagem no Docker para nossa aplicação. <br>
-Agora por último e o principal de todos, vamos rodar o container: "docker run -v volume_video_player:/home/jboss/videos/volume_video_player -v C:\git\volumes:/home/jboss/videos -it -i -p 8080:8080 quarkus/video_player". <br> <br>
+Agora por último e o principal de todos, vamos rodar o container: "docker run -v volume_video_player:/home/jboss/videos/volume_video_player -v C:\volumes:/home/jboss/videos -it -i -p 8080:8080 quarkus/video_player". <br> <br>
 Pronto, se seguiu corretamente todas essas etapas agora abra o navegador com: "http://localhost:8080/" e o Front da aplicação será exibido!!!
 
 # Visualização da aplicação
