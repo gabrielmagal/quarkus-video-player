@@ -7,6 +7,8 @@ import jakarta.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @ApplicationScoped
 public class VideoPlayerController {
@@ -25,15 +27,35 @@ public class VideoPlayerController {
         }
     }
 
-    public Response uploadFile(String path, FormData formData) {
+    public Response uploadFile(FormData formData) {
         try {
-            Path filePath = Path.of(path + formData.fileName);
+            Path filePath = Path.of("C:/videos/" + formData.fileName);
             Files.copy(formData.file, filePath, StandardCopyOption.REPLACE_EXISTING);
             return Response.ok("File uploaded successfully: " + filePath).build();
         } catch (IOException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("Error uploading file: " + e.getMessage()).build();
         }
+    }
+
+    public List<String> listFiles(String path) {
+        List<String> stringList = new ArrayList<>();
+        File folder = new File("C:/videos/" + path);
+        if (folder.exists() && folder.isDirectory()) {
+            File[] files = folder.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        stringList.add(file.getName());
+                    }
+                }
+            } else {
+                throw new RuntimeException("A pasta está vazia.");
+            }
+        } else {
+            throw new RuntimeException("A pasta não existe ou não é um diretório.");
+        }
+        return stringList;
     }
 
     private MediaTypeEnum getMediaType(String mediaName) {

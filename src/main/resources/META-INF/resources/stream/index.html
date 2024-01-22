@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistir</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="navbar">
+    <a href="../index.html">Inicial</a>
+    <a href="index.html">Assista</a>
+    <a href="../upload/index.html">Armazene</a>
+</div>
+
+<div class="content">
+    <div class="button-group">
+        <input type="text" id="folderInput" placeholder="Pasta" />
+        <input type="text" id="mediaNameInput" placeholder="Arquivo (e.g., video.mp4)" />
+        <button onclick="streamMedia()">Assistir</button>
+        <button onclick="getFileList()">Obter lista de arquivos</button>
+    </div>
+
+    <div class="video-container">
+        <video controls id="videoPlayer"></video>
+    </div>
+
+    <ul id="fileList"></ul>
+</div>
+
+<script src="scripts.js"></script>
+</body>
+</html>

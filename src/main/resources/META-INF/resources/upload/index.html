@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Armazenador</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="navbar">
+    <a href="../index.html">Inicial</a>
+    <a href="../stream/index.html">Assista</a>
+    <a href="index.html">Armazene</a>
+</div>
+
+<div class="content upload-container">
+    <h1>Video Upload</h1>
+    <div class="upload-section">
+        <input type="file" id="fileInput" />
+        <label for="fileInput" id="fileInputLabel">Selecione o arquivo</label>
+        <input type="text" id="customVideoName" placeholder="Digite o nome para salvar">
+        <button onclick="uploadFile()">Enviar</button>
+    </div>
+</div>
+
+<script src="scripts.js"></script>
+</body>
+</html>
