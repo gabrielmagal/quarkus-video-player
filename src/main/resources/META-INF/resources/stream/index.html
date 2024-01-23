@@ -1,33 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assistir</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-<div class="navbar">
-    <a href="../index.html">Inicial</a>
-    <a href="index.html">Assista</a>
-    <a href="../upload/index.html">Armazene</a>
-</div>
-
-<div class="content">
-    <div class="button-group">
-        <input type="text" id="folderInput" placeholder="Pasta" />
-        <input type="text" id="mediaNameInput" placeholder="Arquivo (e.g., video.mp4)" />
-        <button onclick="streamMedia()">Assistir</button>
-        <button onclick="getFileList()">Obter lista de arquivos</button>
-    </div>
-
-    <div class="video-container">
-        <video controls id="videoPlayer"></video>
-    </div>
-
-    <ul id="fileList"></ul>
-</div>
-
-<script src="scripts.js"></script>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Assistir</title>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    </head>
+    <body class="bg-dark text-light">
+        <div class="navbar navbar-dark bg-dark">
+            <a class="navbar-brand" href="../index.html">Inicial</a>
+            <a class="navbar-brand active" href="../stream/index.html">Assista</a>
+            <a class="navbar-brand" href="../upload/index.html">Armazene</a>
+        </div>
+        <div class="content">
+            <div class="button-group">
+                <input type="text" id="folderInput" placeholder="Pasta" />
+                <input type="text" id="mediaNameInput" placeholder="Arquivo (e.g., video.mp4)" />
+                <button onclick="streamMedia()">Assistir</button>
+                <button onclick="getFileList()">Obter lista de arquivos</button>
+            </div>
+            <div class="video-container">
+                <video controls id="videoPlayer"></video>
+            </div>
+            <div id="fileList" class="list-group file-list-container bg-dark dark"></div>
+        </div>
+        <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content bg-dark text-light">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="successModalLabel">Sucesso</h5>
+                        <button type="button" class="close text-light" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="successModalBody"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content bg-dark text-light">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="errorModalLabel">Erro</h5>
+                        <button type="button" class="close text-light" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="errorModalBody"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <script src="scripts.js"></script>
+    </body>
 </html>
