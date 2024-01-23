@@ -9,14 +9,27 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @ApplicationScoped
 public class VideoPlayerController {
+    private final String path_videos = System.getProperty("user.home").replace("\\", File.separator) + File.separator + "videos_video_player" + File.separator;
+
     public Response streamMedia(String path, String mediaName) {
-        String videoPath = System.getProperty("user.home") + "/videos/" + path + "/" + mediaName;
-        if (!new File(videoPath).exists()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+        if(Objects.isNull(path) || path.isEmpty() || path.isBlank()) {
+            throw new RuntimeException("A pasta é obrigatória!");
         }
+
+        if(Objects.isNull(mediaName) || mediaName.isEmpty() || mediaName.isBlank()) {
+            throw new RuntimeException("O arquivo é obrigatório!");
+        }
+
+        String videoPath = path_videos + removeLeadingAndTrailingSlash(path) + "/" + removeLeadingAndTrailingSlash(mediaName);
+
+        if (!new File(videoPath).exists()) {
+            throw new RuntimeException("Arquivo não encontrado!");
+        }
+
         try {
             return Response.ok(Files.readAllBytes(Paths.get(videoPath)))
                     .header("Content-Type", getMediaType(mediaName).getContentType())
@@ -29,23 +42,47 @@ public class VideoPlayerController {
 
     public Response uploadFile(FormData formData) {
         try {
-            String path = System.getProperty("user.home") + "/videos/" + formData.fileName;
+            if (formData.fileName == null || formData.fileName.trim().isEmpty()) {
+                throw new RuntimeException("O nome do arquivo é obrigatório!");
+            }
+
+            formData.fileName = removeLeadingAndTrailingSlash(formData.fileName);
+            String path = path_videos + formData.fileName;
+
             int lastSeparatorIndex = path.lastIndexOf(File.separator);
+
+            if (lastSeparatorIndex == -1) {
+                throw new RuntimeException("Caminho do arquivo inválido!");
+            }
+
             String directory = path.substring(0, lastSeparatorIndex);
             String fileName = path.substring(lastSeparatorIndex + 1);
+
             Files.createDirectories(Path.of(directory));
             Path destinationPath = Paths.get(directory, fileName);
-            Files.copy(formData.file, destinationPath, StandardCopyOption.REPLACE_EXISTING);
-            return Response.ok("File uploaded successfully to directory: " + directory + ", with file name: " + fileName).build();
+
+            if (Files.exists(destinationPath)) {
+                throw new FileAlreadyExistsException("Um arquivo com o mesmo nome já existe!");
+            }
+
+            Files.copy(formData.file, destinationPath);
+
+            return Response.ok("Arquivo enviado com sucesso para o diretório: " + directory + ", com nome de arquivo: " + fileName).build();
+        } catch (FileAlreadyExistsException e) {
+            return Response.status(Response.Status.CONFLICT)
+                    .entity("Erro: " + e.getMessage()).build();
         } catch (IOException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Error uploading file: " + e.getMessage()).build();
+                    .entity("Erro ao enviar arquivo: " + e.getMessage()).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("Erro: " + e.getMessage()).build();
         }
     }
 
     public List<String> listFiles(String path) {
         List<String> stringList = new ArrayList<>();
-        File folder = new File(System.getProperty("user.home") + "/videos/" + path);
+        File folder = new File(path_videos + path);
         if (folder.exists() && folder.isDirectory()) {
             File[] files = folder.listFiles();
             if (files != null) {
@@ -74,5 +111,13 @@ public class VideoPlayerController {
             return MediaTypeEnum.VIDEO;
         }
         return MediaTypeEnum.VIDEO;
+    }
+
+    private String removeLeadingAndTrailingSlash(String str) {
+        if (str.startsWith("/") || str.startsWith("\\"))
+            str = str.substring(1);
+        if (str.endsWith("/") || str.endsWith("\\"))
+            str = str.substring(0, str.length() - 1);
+        return str;
     }
 }

@@ -9,7 +9,6 @@ import jakarta.ws.rs.core.Response;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import java.util.List;
-import java.util.Objects;
 
 @Path("/videos")
 public class VideoPlayerResource {
@@ -19,9 +18,6 @@ public class VideoPlayerResource {
     @GET
     @Path("/{mediaName}")
     public Response streamMedia(@QueryParam("folder") String path, @PathParam("mediaName") String mediaName) {
-        if(Objects.isNull(path) || path.isEmpty() || path.isBlank()) {
-            throw new RuntimeException("A pasta é obrigatória!");
-        }
         return videoPlayerController.streamMedia(path, mediaName);
     }
 

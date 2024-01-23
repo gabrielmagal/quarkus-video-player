@@ -3,23 +3,29 @@ function streamMedia() {
     const folderPath = document.getElementById('folderInput').value;
     const videoPlayer = document.getElementById('videoPlayer');
 
+    if (!folderPath || !mediaName) {
+        $('#errorModalBody').text('Por favor, preencha os campos Pasta e Arquivo!');
+        $('#errorModal').modal('show');
+        return;
+    }
+
     fetch(`/videos/${mediaName}?folder=${folderPath}`)
         .then(response => {
             if (!response.ok) {
-                if (response.status === 404) {
-                    $('#errorModalBody').text('Vídeo não encontrado.');
-                    $('#errorModal').modal('show');
-                } else {
-                    $('#errorModalBody').text('Erro na requisição.');
-                    $('#errorModal').modal('show');
-                }
-                throw new Error('Erro na requisição.');
+                return response.json();
             }
 
             return response.blob();
         })
-        .then(blob => {
-            const videoUrl = URL.createObjectURL(blob);
+        .then(data => {
+            if (data && data.details) {
+                const errorMessage = data.details.replace(/.*: /g, '');
+                $('#errorModalBody').text(errorMessage);
+                $('#errorModal').modal('show');
+                throw new Error(errorMessage);
+            }
+
+            const videoUrl = URL.createObjectURL(data);
             videoPlayer.src = videoUrl;
         })
         .catch(error => {
@@ -28,7 +34,13 @@ function streamMedia() {
 }
 
 function getFileList() {
-    fetch(`/videos?folder=${document.getElementById('folderInput').value}`)
+    const folderInputValue = document.getElementById('folderInput').value;
+    if (!folderInputValue) {
+        $('#errorModalBody').text('Por favor, preencha o campo de pasta.');
+        $('#errorModal').modal('show');
+        return;
+    }
+    fetch(`/videos?folder=${folderInputValue}`)
         .then(response => {
             if (!response.ok) {
                 $('#errorModalBody').text('Erro ao obter lista de arquivos.');

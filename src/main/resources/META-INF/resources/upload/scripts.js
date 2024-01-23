@@ -10,7 +10,7 @@ function handleFileSelect(event) {
     if (fileName) {
         fileInputLabel.textContent = fileName;
     } else {
-        fileInputLabel.textContent = 'Choose a file';
+        fileInputLabel.textContent = 'Escolha um arquivo';
     }
 }
 
@@ -28,12 +28,28 @@ function uploadFile() {
             method: 'POST',
             body: formData,
         })
-        .then(response => response.text())
+        .then(response => {
+            if (response.status === 409) {
+                return response.text().then(data => {
+                    $('#errorModalBody').text(data);
+                    $('#errorModal').modal('show');
+                    throw new Error(data);
+                });
+            }
+            if (!response.ok) {
+                return response.text().then(data => {
+                    throw new Error(data || 'Erro desconhecido.');
+                });
+            }
+            return response.text();
+        })
         .then(data => {
+            $('#successModalBody').text(data);
+            $('#successModal').modal('show');
             console.log(data);
         })
         .catch(error => {
-            console.error('Error uploading file:', error);
+            console.error('Error uploading file:', error.message);
         });
     }
 }
