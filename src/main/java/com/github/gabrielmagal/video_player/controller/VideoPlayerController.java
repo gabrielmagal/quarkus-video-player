@@ -81,6 +81,9 @@ public class VideoPlayerController {
     }
 
     public List<String> listFiles(String path) {
+        if(path.contains("../")) {
+            throw new RuntimeException("ERRO!");
+        }
         List<String> stringList = new ArrayList<>();
         File folder = new File(path_videos + path);
         if (folder.exists() && folder.isDirectory()) {
@@ -88,7 +91,7 @@ public class VideoPlayerController {
             if (files != null) {
                 for (File file : files) {
                     if (file.isFile()) {
-                        stringList.add(file.getName());
+                        stringList.add(file.getAbsolutePath());
                     }
                 }
             } else {
